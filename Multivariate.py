@@ -1,30 +1,42 @@
-import numpy as np, matplotlib.pyplot as plt
+import numpy as np
 from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 
-np.random.seed(42)
-X1, X2, X3 = np.random.rand(200)*10, np.random.rand(200)*5, np.random.rand(200)*8
-y = 3*X1 + 2*X2 - 1.5*X3 + 10 + np.random.randn(200)*2
-X = np.column_stack([X1, X2, X3])
+n = int(input("Enter number of data points: "))
+x1, x2, y = [], [], []
 
-Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, random_state=42)
-m = LinearRegression().fit(Xtr, ytr)
-yp = m.predict(Xte)
+for i in range(n):
+    a = float(input(f"Enter X1[{i+1}]: "))
+    b = float(input(f"Enter X2[{i+1}]: "))
+    c = float(input(f"Enter Y[{i+1}]: "))
+    x1.append(a)
+    x2.append(b)
+    y.append(c)
 
-print("Coefficients:", np.round(m.coef_, 2))
-print("Intercept:", round(m.intercept_, 2))
-print("R²:", round(r2_score(yte, yp), 3))
+# Convert to numpy arrays
+X = np.column_stack((x1, x2))
+y = np.array(y)
 
-plt.scatter(yte, yp, c='blue', alpha=0.6)
-plt.plot([yte.min(), yte.max()], [yte.min(), yte.max()], 'r--')
-plt.title("Predicted vs Actual")
-plt.show()
+# Train model
+model = LinearRegression()
+model.fit(X, y)
 
-plt.scatter(yte, yp, color='green', alpha=0.6, label='Predicted vs Actual')
-plt.plot([yte.min(), yte.max()], [yte.min(), yte.max()], 'r--', label='Ideal Fit')
-plt.xlabel("Actual Values")
-plt.ylabel("Predicted Values")
-plt.title("Predicted vs Actual (Perfect Fit Line in Red)")
-plt.legend()
-plt.show()
+# Display coefficients and intercept
+print("\nCoefficients (b1, b2):", model.coef_)
+print("Intercept (b0):", model.intercept_)
+
+# Predictions and R2 Score
+y_pred = model.predict(X)
+r2 = r2_score(y, y_pred)
+print("\nR² Score:", round(r2, 4))
+
+# Prediction for new values
+a = float(input("\nEnter new X1: "))
+b = float(input("Enter new X2: "))
+pred = model.predict([[a, b]])
+print("Predicted Y =", round(pred[0], 2))
+
+# Display comparison table
+print("\nX1\tX2\tActualY\tPredY")
+for i in range(n):
+    print(f"{x1[i]}\t{x2[i]}\t{y[i]}\t{round(y_pred[i],2)}")
