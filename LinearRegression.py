@@ -1,28 +1,35 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
+# Take input from user
 n = int(input("Enter number of data points: "))
 x = []
 y = []
 
 for i in range(n):
-    xi = float(input(f"Enter X{i+1}: "))
-    yi = float(input(f"Enter Y{i+1}: "))
+    xi = float(input(f"Enter X[{i+1}]: "))
+    yi = float(input(f"Enter Y[{i+1}]: "))
     x.append([xi])
     y.append(yi)
 
+# Convert to numpy arrays
 x = np.array(x)
 y = np.array(y)
 
+# Train Linear Regression model
 model = LinearRegression()
 model.fit(x, y)
 
-print("\nCoefficient (Slope):", model.coef_[0])
-print("Intercept:", model.intercept_)
+# Get coefficients
+b0 = model.intercept_
+b1 = model.coef_[0]
 
-pred = float(input("\nEnter X value to predict Y: "))
-print("Predicted Y =", model.predict([[pred]])[0])
+# Display regression equation
+print(f"\nRegression Equation: Y = {round(b0, 2)} + {round(b1, 2)} * X")
 
-y_pred = model.predict(x)
-for i in range(n):
-    print(f"X={x[i][0]}, Actual Y={y[i]}, Predicted Y={round(y_pred[i],2)}")
+# Predict new value
+new_x = float(input("\nEnter X value to predict Y: "))
+pred_y = model.predict([[new_x]])[0]
+
+# Show only prediction
+print(f"Predicted Y for X = {new_x} is: {round(pred_y, 2)}")
